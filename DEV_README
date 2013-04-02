@@ -1,0 +1,52 @@
+=== TODOs ===
+
+If you are interested in contributing to Heroics Mode, there are a few TODOs 
+sprinkled through the code. Some of these are simply decisions that need to be 
+finalized, but others are places where some coding needs to be done.
+
+### decisions
+events.cfg:69
+events.cfg:149
+goods.cfg:204
+
+### coding
+goods.cfg:190
+goods.cfg:223
+goods.cfg:373
+utility.lua:136
+
+=== Amp-tags ===
+
+Throughout the WML of Heroics Mode I have placed what I call amp-tags: an 
+ampersand followed by a tag. These are in the comments and draw attention to 
+the following code. Currently there are two amp-tags in use:
+
+* `&remix` tags draw attention to code that will often need to be changed or 
+  removed when Heroics Mode is used in a campaign.
+* `&devfor` tags draw attention to code important to scenario and era 
+  developers who wish to support Heroics Mode.
+
+While the most accurate way to find these tags is to do a multi-file search or 
+to use cat+grep, the lists below should be fairly accurate.
+
+### &remix
+events.cfg:82
+events.cfg:109
+events.cfg:132
+events.cfg:140
+goods.cfg:11
+goods.cfg:99
+menus.cfg:7
+utils.cfg:28
+utils.cfg:72
+utils.cfg:90
+
+### &devfor
+events.cfg:131
+menus.cfg:7
+utils.cfg:72
+
+=== Lua Howtos ===
+
+Because I found getting into Lua+Wesnoth to have a very steep learning curve, I 
+am writing a series of Lua Howtos to explain the process. See lua_howto.html.

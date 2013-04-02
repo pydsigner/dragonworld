@@ -1,0 +1,35 @@
+=== 0.3.4 (12 March 2013) ===
+* Finally finished fixing bugs introduced in v0.3.1
+* Some preparatory refactoring for v0.4.0
+
+=== 0.3.3 (11 March 2013) ===
+* Updated DEV_README
+
+=== 0.3.2 (9 March 2013) ===
+* Fixed reference to removed toolkit.cfg
+
+=== 0.3.1 (8 March 2013) ===
+* Various code and map refactorings
+
+=== 0.3.0 (8 March 2013) ===
+* Heroics Mode is now beta!
+* Added level-up equipment and shop, as well as another shop, to HM
+* Some HM balancing
+* Added some limits and dependencies
+* Added amp-tags to comments (see DEV_README)
+* HM versions of Hidden Valley, Auction-X, and Isar's Cross
+* Completely redid Hidden Valley, as it was un-salvagably asymmetrical.
+* Added CHANGELOG, DEV_README, and lua_howto.html
+* Added images to the improvement and help menus
+
+=== 0.2.1 (27 February 2013) ===
+* Fixed missing text in HM menus
+
+=== 0.2.0 (27 February 2013) ===
+* Added Heroics Mode and associated equipment
+* HM versions of both Hamlets maps and the Crusader's Field map
+
+=== 0.1.0 (31 January 2013) ===
+* First release
+* 2 versions of the same map, Hidden Valley; one for regular play, and one for 
+  Dovolente's Settlers mod

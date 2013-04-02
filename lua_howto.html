@@ -1,0 +1,506 @@
+<!doctype html>
+<html>
+    <head>
+        <meta charset="UTF-8">
+        <title>The Wesnoth Lua Howto</title>
+        <style type="text/css">
+            /*******************
+                Reset CSS
+            ********************/
+            
+            * {
+                padding: 0;
+                margin: 0;
+                font-size: 1em;
+                font-weight: normal;
+            }
+            
+            table { 
+                border-collapse: collapse;
+                border-spacing: 0;
+            }
+            
+            td, th, caption {
+                font-weight: normal;
+                text-align: left;
+            }
+            
+            img, fieldset {
+                border: 0;
+            }
+            
+            ol {
+                padding-left: 1.4em;
+                list-style: decimal;
+            }
+            
+            ul {
+                padding-left: 1.4em;
+                list-style: disc;
+            }
+            
+            q:before, q:after {
+                content: '';
+            }
+            
+            /*******************
+                Real Styles
+            ********************/
+            
+            html {
+                background-color: #aaa;
+            }
+            
+            body {
+                background-color: #f3f3f3;
+                
+                box-shadow: 0 0 6px 2px rgba(0, 0, 0, .8);
+                border-radius: 2px;
+                
+                margin: 10px auto;
+                padding: 10px;
+                max-width: 900px;
+                
+                color: #121212;
+                font: normal 14px "Liberation Sans", sans-serif;
+            }
+            
+            h1, h2, h3, h4, h5 {
+                font-family: Ubuntu, helvetica, sans-serif;
+                /*margin: 2px 5px 2px 5px;*/
+                padding: 0;
+            }
+            
+            h1, h2, h3 {
+                font-weight: bold;
+                line-height: 1em;
+            }
+            
+            h1 {
+                text-align: center;
+                font: bold 35px Imperator, Ubuntu, helvetica, sans-serif;
+                text-shadow: 2px 2px rgba(100, 100, 100, 0.6);
+            }
+            
+            h2 {
+                margin: 27px 7px 7px 20px;
+                font-size: 16px;
+            }
+            
+            h3 {
+                margin: 10px 0 5px 0;
+                font-size: 15px;
+            }
+            
+            hr {
+                border-radius: 5px;
+                padding: 8px;
+                margin: 5px 10px 9px 10px;
+                
+                /* Fallback BG color */
+                background-color: #30771d;
+                
+                /* Yi yi yi, complex x4! Makes a nice green gradient.*/
+                background-image: -webkit-linear-gradient(
+                                    top, #348821 0%, #30771d 46%, #30771d 46%, #176600 54%, 
+                                    #176600 54%, #115300 100%);
+                background-image: -moz-linear-gradient(
+                                    top, #348821 0%, #30771d 46%, #30771d 46%, #176600 54%, 
+                                    #176600 54%, #115300 100%);
+                background-image: -o-linear-gradient(
+                                    top, #348821 0%, #30771d 46%, #30771d 46%, #176600 54%, 
+                                    #176600 54%, #115300 100%);
+                background-image: linear-gradient(
+                                    top, #348821 0%, #30771d 46%, #30771d 46%, #176600 54%, 
+                                    #176600 54%, #115300 100%);
+                
+                border: 1px solid #119500;
+                box-shadow: inset 0px 0px 0px 1px rgba(155, 255, 100, 0.4), 
+                            0 1px 3px #333;
+            }
+            header {
+                text-align: center;
+            }
+            
+            footer {
+                margin: 0 10px -5px 10px;
+                text-align: center;
+                font-size: 80%;
+                padding-top: 5px;
+            }
+            
+            a {
+                border-bottom: 1px dashed #111;
+                text-decoration: none;
+                color: #338;
+            }
+            
+            a:hover {
+                color: #833;
+            }
+            
+            nav {
+                background-color: #e7e7e7;
+                
+                box-shadow: 0 0 6px 2px rgba(0, 0, 0, .8);
+                border-radius: 4px;
+                border: 1px solid #740207;
+                
+                padding: 4px 4px 4px 4px;
+                margin: 4px 0 25px 30px;
+                max-width: 750px;
+            }
+            
+            nav h2 {
+                text-align: center;
+                background-color: #740207;
+                color: #fff;
+                
+                padding: 1px 1px 3px 1px;
+                margin: -4px -4px 1px -4px;
+            }
+            
+            nav a {
+                border-radius: 4px;
+                padding: 2px;
+                margin: 4px;
+                text-decoration: none;
+                display: block;
+            }
+            
+            p {
+                text-indent: 1em;
+            }
+            
+            code, tt {
+                /*white-space: pre;*/
+                border: 1px solid #b07040;
+                color: #705030;
+                background-color: #fff;
+            }
+            
+            code {
+                max-width: 750px;
+                display: block;
+                padding: 5px;
+                margin: 10px 0 10px 30px;
+                border-radius: 0 10px 0 0;
+                overflow: auto;
+            }
+            
+            tt {
+                padding: 1px 3px;
+                display: inline-block;
+                margin: 0 1px;
+            }
+            
+            #main {
+                margin: 16px 0 0 30px;
+            }
+            
+            /**************************
+                PYGMENTS
+            **************************/
+            
+            code .c { color: #8f5902; font-style: italic } /* Comment */
+            code .k { color: #204a87; font-weight: bold } /* Keyword */
+            code .n { color: #000000 } /* Name */
+            code .o { color: #ce5c00; font-weight: bold } /* Operator */
+            code .p { color: #000000; font-weight: bold } /* Punctuation */
+            code .cp { color: #8f5902; font-style: italic } /* Comment.Preproc */
+            code .c1 { color: #8f5902; font-style: italic } /* Comment.Single */
+            code .kc { color: #204a87; font-weight: bold } /* Keyword.Constant */
+            code .kd { color: #204a87; font-weight: bold } /* Keyword.Declaration */
+            code .kn { color: #204a87; font-weight: bold } /* Keyword.Namespace */
+            code .kp { color: #204a87; font-weight: bold } /* Keyword.Pseudo */
+            code .kr { color: #204a87; font-weight: bold } /* Keyword.Reserved */
+            code .kt { color: #204a87; font-weight: bold } /* Keyword.Type */
+            code .s { color: #4e9a06 } /* Literal.String */
+            code .na { color: #c4a000 } /* Name.Attribute */
+            code .nb { color: #204a87 } /* Name.Builtin */
+            code .nc { color: #000000 } /* Name.Class */
+            code .no { color: #000000 } /* Name.Constant */
+            code .nd { color: #5c35cc; font-weight: bold } /* Name.Decorator */
+            code .ni { color: #ce5c00 } /* Name.Entity */
+            code .ne { color: #cc0000; font-weight: bold } /* Name.Exception */
+            code .nf { color: #000000 } /* Name.Function */
+            code .nl { color: #f57900 } /* Name.Label */
+            code .nn { color: #000000 } /* Name.Namespace */
+            code .nx { color: #000000 } /* Name.Other */
+            code .nt { color: #204a87; font-weight: bold } /* Name.Tag */
+            code .nv { color: #000000 } /* Name.Variable */
+            code .ow { color: #204a87; font-weight: bold } /* Operator.Word */
+            code .mi { color: #0000cf; font-weight: bold } /* Literal.Number.Integer */
+            code .mo { color: #0000cf; font-weight: bold } /* Literal.Number.Oct */
+            code .s2 { color: #4e9a06 } /* Literal.String.Double */
+            code .s1 { color: #4e9a06 } /* Literal.String.Single */
+            code .bp { color: #3465a4 } /* Name.Builtin.Pseudo */
+            code .vc { color: #000000 } /* Name.Variable.Class */
+            code .vg { color: #000000 } /* Name.Variable.Global */
+            code .vi { color: #000000 } /* Name.Variable.Instance */
+
+            
+            /**************************
+                SMALL SCREENS
+            **************************/
+            
+            @media (max-width: 940px) {
+                html {
+                    background-color: #f3f3f3;
+                }
+                
+                body {
+                    background-image: none;
+                    margin: 0;
+                    border-radius: 0;
+                    box-shadow: none;
+                }
+                
+                hr {
+                    max-width: 700px;
+                    margin: 5px auto 9px auto;
+                }
+                
+                code {
+                    margin: 10px auto;
+                }
+            }
+            
+            @media (max-width: 870px) {
+                #main {
+                    margin-left: 0;
+                }
+                
+                nav {
+                    max-width: 600px;
+                    margin: 4px auto 25px auto;
+                }
+            }
+            
+            @media (max-width: 544px) {
+                h1 {
+                    font-size: 23px;
+                }
+                
+                h2 {
+                    font-size: 14px;
+                }
+                
+                p {
+                    margin-top: 2px;
+                }
+                
+                code {
+                    font-size: 90%;
+                }
+            }
+        </style>
+    </head>
+    
+    <body>
+        <header>
+            <h1>The Wesnoth Lua Howto</h1>
+            <h2>How to conquer the curve -- the learning curve!</h2>
+        </header>
+        <hr>
+        
+        <div id="main">
+            <nav>
+                <h2>Howtos</h2>
+                <a href="#p1">1. How do I easily access the built-in helper code?</a>
+                <a href="#p1">2. How do I easily work with Wesnoth variables and WML tags?</a>
+                <a href="#p3">3. How do I create a new WML tag?</a>
+                <!--<a href="#p4">4. How do I save WML tags to a Wesnoth variable?</a>
+                <a href="#p5">5. How do I make a tag use standard filters?</a>
+                <a href="#p6">6. How do I combine passed WML with generated WML?</a>-->
+            </nav>
+            
+            
+            <h2 id="p1">1. How to easily access the built-in helper code</h2>
+            
+            <h3>Require it and set it to a short, global variable</h3>
+            <code>
+<span class="n">H</span> <span class="o">=</span> <span class="n">wesnoth</span><span class="p">.</span><span class="n">require</span> <span class="s2">&quot;</span><span class="s">lua/helper.lua&quot;</span>
+</code>
+            
+            
+            <h2 id="p2">2. How to easily work with Wesnoth variables and WML tags</h2>
+            See also the mainline helper.lua, lines 181, 197, and 213
+            
+            <h3>Follow <a href="#p1">howto #1</a></h3>
+            
+            <h3>Setup the easy-access contexts</h3>
+            Easily run WML tags.
+            <code>
+<span class="c1">-- ! W.message{side=1, message=&quot;I&#39;m from side 1!&quot;}</span>
+<br><span class="c1">-- is equivalent to to:</span>
+<br><span class="c1">-- ! wesnoth.fire(&quot;message&quot;, {side=1, message=&quot;boo&quot;})</span>
+<br><span class="c1">-- which is equivalent to putting the following in your WML:</span>
+<br><span class="c1">-- [message]</span>
+<br><span class="c1">--      side=1</span>
+<br><span class="c1">--      message=&quot;I&#39;m from side 1!&quot;</span>
+<br><span class="c1">-- [/message]</span>
+<br>
+<br><span class="n">W</span> <span class="o">=</span> <span class="n">H</span><span class="p">.</span><span class="n">set_wml_action_metatable</span> <span class="p">{}</span>
+</code>
+            Easily create WML tags.
+            <code>
+<span class="c1">-- ! T.option{message=&quot;I do nothing&quot;, T.command{}}</span>
+<br><span class="c1">-- is equivalent to:</span>
+<br><span class="c1">-- ! {&quot;option&quot;, {message=&quot;I do nothing&quot;, {&quot;command&quot;, {}}}}</span>
+<br><span class="c1">-- which is equivalent to storing the following WML for later use:</span>
+<br><span class="c1">-- [option]</span>
+<br><span class="c1">--      message=&quot;I do nothing&quot;</span>
+<br><span class="c1">--      [command]</span>
+<br><span class="c1">--      [/command]</span>
+<br><span class="c1">-- [/option]</span>
+</code>
+            Easily access and manipulate Wesnoth variables.
+            <code>
+<span class="n">T</span> <span class="o">=</span> <span class="n">H</span><span class="p">.</span><span class="n">set_wml_tag_metatable</span> <span class="p">{}</span>
+<br><span class="c1">-- ! V.my_var</span>
+<br><span class="c1">-- and</span>
+<br><span class="c1">-- ! V[&quot;my_var&quot;]</span>
+<br><span class="c1">-- are equivalent to:</span>
+<br><span class="c1">-- ! wesnoth.get_variable(&quot;my_var&quot;)</span>
+<br><span class="c1">-- which is equivalent to putting this in your WML:</span>
+<br><span class="c1">-- $my_var</span>
+<br>
+<br><span class="n">V</span> <span class="o">=</span> <span class="n">H</span><span class="p">.</span><span class="n">set_wml_var_metatable</span> <span class="p">{}</span>
+</code>
+            
+            <h3>Final Code</h3>
+            <code>
+<span class="n">W</span> <span class="o">=</span> <span class="n">H</span><span class="p">.</span><span class="n">set_wml_action_metatable</span> <span class="p">{}</span>
+<br><span class="n">T</span> <span class="o">=</span> <span class="n">H</span><span class="p">.</span><span class="n">set_wml_tag_metatable</span> <span class="p">{}</span>
+<br><span class="n">V</span> <span class="o">=</span> <span class="n">H</span><span class="p">.</span><span class="n">set_wml_var_metatable</span> <span class="p">{}</span>
+</code>
+            
+            
+            <h2 id="p3">3. How to create a new WML tag</h2>
+            See also the mainline wml-tags.lua:40 for another 
+            short-but-featureful tag. 
+            
+            <h3>The task</h3>
+            We want a tag that will do some math and set a variable to the 
+            result. (The usefulness of the tag is debatable. But it's a decent 
+            example, and that's the primary concern.) We will get a number from 
+            one variable, add a number to it, multiply that by another number, 
+            and set another variable to that result.
+            
+            <h3>Prepare the environment by following <a href="#p2">howto #2</a></h3>
+            
+            <h3>Create the shell of the new tag</h3>
+            <code>
+<span class="k">function</span> <span class="nc">wesnoth</span><span class="p">.</span><span class="nf">wml_actions</span><span class="p">.</span><span class="n">math_tag</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+<br><span class="k">end</span>
+</code>
+            
+            At this point the tag does nothing. But it does work &mdash; try putting
+            <code><span class="nt">[math_tag]</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na">spam</span><span class="p">=</span><span class="s">&quot;jam&quot;</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na">foo</span><span class="p">=</span>bar
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="nt">[fake_tag_here]</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="nt">[/fake_tag_here]</span>
+<br><span class="nt">[/math_tag]</span>
+</code>
+            into a <tt>command</tt> tag! Now that we have a tag defined, it's 
+            time to make it do what we want it to.
+            
+            <h3>Get the passed-in information</h3>
+            This goes inside the shell previously created.
+            <code>
+<span class="c1">-- We want this information to be local, we don&#39;t need it elsewhere!</span>
+<br><span class="kd">local</span> <span class="n">from_var</span><span class="p">,</span> <span class="n">to_var</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">.</span><span class="n">from_var</span><span class="p">,</span> <span class="n">cfg</span><span class="p">.</span><span class="n">to_var</span>
+<br>
+<br><span class="c1">-- Got to make these into numbers!</span>
+<br><span class="kd">local</span> <span class="n">addend</span><span class="p">,</span> <span class="n">factor</span> <span class="o">=</span> <span class="nb">tonumber</span><span class="p">(</span><span class="n">cfg</span><span class="p">.</span><span class="n">addend</span><span class="p">),</span> <span class="nb">tonumber</span><span class="p">(</span><span class="n">cfg</span><span class="p">.</span><span class="n">factor</span><span class="p">)</span>
+</code>
+            
+            <h3>Wait! Maybe we need some defaults? But we do need from_var!</h3>
+            This replaces the code just created.
+            <code>
+<span class="c1">-- Make a cool error if from_var isn&#39;t passed</span>
+<br><span class="kd">local</span> <span class="n">from_var</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">.</span><span class="n">from_var</span> <span class="ow">or</span> <span class="n">H</span><span class="p">.</span><span class="n">wml_error</span><span class="p">(</span>
+<br>&nbsp;&nbsp;<span class="s2">&quot;</span><span class="s">[math_tag] missing required from_var= attribute.&quot;</span><span class="p">)</span>
+<br>
+<br><span class="c1">-- Have defaults for everything else</span>
+<br><span class="c1">-- By default, we just stick the information back into the same variable, </span>
+<br><span class="c1">-- and don&#39;t change the number</span>
+<br><span class="kd">local</span> <span class="n">to_var</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">.</span><span class="n">to_var</span> <span class="ow">or</span> <span class="n">from_var</span>
+<br><span class="kd">local</span> <span class="n">addend</span><span class="p">,</span> <span class="n">factor</span> <span class="o">=</span> <span class="nb">tonumber</span><span class="p">(</span><span class="n">cfg</span><span class="p">.</span><span class="n">addend</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">tonumber</span><span class="p">(</span><span class="n">cfg</span><span class="p">.</span><span class="n">factor</span> <span class="ow">or</span> <span class="mi">1</span><span class="p">)</span>
+</code>
+            
+            <h3>Actually get the information from the variable</h3>
+            <code>
+<span class="kd">local</span> <span class="n">num</span> <span class="o">=</span> <span class="nb">tonumber</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="n">from_var</span><span class="p">])</span>
+</code>
+            
+            <h3>Do the math</h3>
+            <code>
+<span class="n">num</span> <span class="o">=</span> <span class="p">(</span><span class="n">num</span> <span class="o">+</span> <span class="n">addend</span><span class="p">)</span> <span class="o">*</span> <span class="n">factor</span>
+</code>
+            
+            <h3>Set the new variable</h3>
+            <code>
+<span class="n">V</span><span class="p">[</span><span class="n">to_var</span><span class="p">]</span> <span class="o">=</span> <span class="n">num</span>
+</code>
+            
+            <h3>Usage</h3>
+            Now we are done! This tag can used like so:
+            <code>
+<span class="nt">[math_tag]</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na">from_var</span><span class="p">=</span>temp<span class="p">_</span>num
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na">to_var</span><span class="p">=</span>final
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na">addend</span><span class="p">=</span>6
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="na">factor</span><span class="p">=</span>4
+<br><span class="nt">[/math_tag]</span>
+</code>
+            Where, if <tt>temp_num</tt> is 5, <tt>final</tt> will become 44.
+            
+            <h3>Final Code</h3>
+            <code>
+<span class="k">function</span> <span class="nc">wesnoth</span><span class="p">.</span><span class="nf">wml_actions</span><span class="p">.</span><span class="n">math_tag</span><span class="p">(</span><span class="n">cfg</span><span class="p">)</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kd">local</span> <span class="n">from_var</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">.</span><span class="n">from_var</span> <span class="ow">or</span> 
+<br>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;<span class="n">H</span><span class="p">.</span><span class="n">wml_error</span> <span class="s2">&quot;</span><span class="s">[math_tag] missing required from_var= attribute.&quot;</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kd">local</span> <span class="n">to_var</span> <span class="o">=</span> <span class="n">cfg</span><span class="p">.</span><span class="n">to_var</span> <span class="ow">or</span> <span class="n">from_var</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kd">local</span> <span class="n">addend</span><span class="p">,</span> <span class="n">factor</span> <span class="o">=</span> <span class="nb">tonumber</span><span class="p">(</span><span class="n">cfg</span><span class="p">.</span><span class="n">addend</span> <span class="ow">or</span> <span class="mi">0</span><span class="p">),</span> <span class="nb">tonumber</span><span class="p">(</span><span class="n">cfg</span><span class="p">.</span><span class="n">factor</span> <span class="ow">or</span> <span class="mi">1</span><span class="p">)</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="kd">local</span> <span class="n">num</span> <span class="o">=</span> <span class="nb">tonumber</span><span class="p">(</span><span class="n">V</span><span class="p">[</span><span class="n">from_var</span><span class="p">])</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="n">num</span> <span class="o">=</span> <span class="n">num</span> <span class="o">+</span> <span class="n">addend</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="n">num</span> <span class="o">=</span> <span class="n">num</span> <span class="o">*</span> <span class="n">factor</span>
+<br>&nbsp;&nbsp;&nbsp;&nbsp;
+<br>&nbsp;&nbsp;&nbsp;&nbsp;<span class="n">V</span><span class="p">[</span><span class="n">to_var</span><span class="p">]</span> <span class="o">=</span> <span class="n">num</span>
+<br><span class="k">end</span>
+</code>
+            
+            <h2>To Be Continued...</h2>
+            <!--<h2 id="p4">4. How to make a tag use standard filters</h2>
+            From now on, I will just <i>assume</i> that you have read howtos 
+            <a href="#p1">#1</a> and <a href="#p2">#2</a>, or at least know 
+            what is going on there.
+            
+            <h3>The task</h3>
+            We need a tag that 
+            
+            
+            <h2 id="p5">5. How to save WML tags to a Wesnoth variable</h2>
+            
+            <h3>This howto continues building the tag from 
+            <a href="#p4">howto #4</a>. Read that first.</h3>
+            
+            
+            
+            
+            <h2 id="p6">6. How to combine passed WML with generated WML</h2>
+            In my experience, this was the hardest part of writing Heroics 
+            Mode. But then, I didn't have any precedent to help me. Now I do, 
+            and perhaps this howto will help Lua tags supplant WML macros in 
+            many situations.
+            
+            <h3>This howto is the continuation of <a href="p5">howto #5</a>. 
+            Read it if you haven't already.</h3>-->
+        </div>
+    </body>
+</html>
